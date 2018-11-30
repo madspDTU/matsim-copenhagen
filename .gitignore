@@ -17,5 +17,7 @@ hs_err_pid*
 /output/
 /bin/
 
+/original-input-data/copenhagen.osm.gz
+
 /.idea/
 *.iml
