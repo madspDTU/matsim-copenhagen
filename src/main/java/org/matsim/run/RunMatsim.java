@@ -19,12 +19,18 @@
 package org.matsim.run;
 
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.network.Network;
+import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy.OverwriteFileSetting;
 import org.matsim.core.gbl.Gbl;
+import org.matsim.core.network.algorithms.NetworkCleaner;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.core.utils.geometry.CoordinateTransformation;
+import org.matsim.core.utils.geometry.transformations.TransformationFactory;
+import org.matsim.core.utils.io.OsmNetworkReader;
 
 /**
  * @author nagel
@@ -32,31 +38,51 @@ import org.matsim.core.scenario.ScenarioUtils;
  */
 public class RunMatsim {
 
+	private static final String osm = "./original-input-data/copenhagen.osm.gz";
+
+
 	public static void main(String[] args) {
-		Gbl.assertIf(args.length >=1 && args[0]!="" );
-		run(ConfigUtils.loadConfig(args[0]));
+		run(ConfigUtils.createConfig());
 		// makes some sense to not modify the config here but in the run method to help  with regression testing.
 	}
-	
+
 	static void run(Config config) {
+
+		
+		String urlForOSMExtract = "https://overpass-api.de/api/map?bbox=10.838,54.555,12.690,56.140";  //Should be created on-the-go in the future.
+		//Don't know if this can be used directly from Java. 
 		
 		// possibly modify config here
-		
+
 		// ---
-		
+
 		Scenario scenario = ScenarioUtils.loadScenario(config) ;
-		
+
+		writeCopenhagenFromOSM(scenario.getNetwork());
+
 		// possibly modify scenario here
-		
+
 		// ---
-		
+
 		Controler controler = new Controler( scenario ) ;
-		
+ 
 		// possibly modify controler here
-		
+
 		// ---
-		
-		controler.run();
+
+	//	controler.run();
 	}
-	
+
+
+	public static void writeCopenhagenFromOSM(Network net){
+
+		CoordinateTransformation ct = TransformationFactory.getCoordinateTransformation(
+				TransformationFactory.WGS84, TransformationFactory.WGS84_UTM33N);
+		OsmNetworkReader onr = new OsmNetworkReader(net,ct);
+		onr.parse(osm); 
+		new NetworkCleaner().run(net);
+		new NetworkWriter(net).write("./output-data/MATSimCopenhagenNetwork.xml.gz");
+
+	}
+
 }
