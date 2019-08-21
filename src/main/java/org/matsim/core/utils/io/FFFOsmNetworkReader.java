@@ -101,7 +101,7 @@ public class FFFOsmNetworkReader implements MatsimSomeReader {
 	private final static String TAG_JUNCTION = "junction";
 	private final static String TAG_ONEWAY = "oneway";
 	private final static String TAG_ACCESS = "access";
-	private final static String TAG_BICYCLE = "bicycle";
+	private final static String TAG_BICYCLE = "bicycle"; 
 	private static List<String> allTags = new LinkedList<>(Arrays.asList(
 			TAG_LANES, TAG_LANES_FORWARD, TAG_LANES_BACKWARD, TAG_CYCLEWAY, TAG_CYCLEWAY_RIGHT, TAG_CYCLEWAY_LEFT, TAG_CYCLEWAY_BOTH,
 			TAG_CYCLEWAY_WIDTH, TAG_CYCLEWAY_RIGHT_WIDTH, TAG_CYCLEWAY_LEFT_WIDTH, TAG_WIDTH, TAG_NAME,
